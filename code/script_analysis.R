@@ -22,14 +22,9 @@
   source("./init.R")
 
   # Read output
-  file_name <- grep("ggshape", list.files("../output/"), value = TRUE)[2]
+  file_name <- grep("ggshape", list.files("../output/"), value = TRUE)[3]
   run_name <- gsub("_out.rds", "", file_name)
   gg_shape <- readRDS(paste0("../output/", file_name))
-
-# Plots -------------------------------------------------------------------
-
-  # Define which outcome measure to plot
-  result <- levels(gg_shape$variable)[1]
 
   # New facet label names for XTP_R2 variable
   XTP_R2.labs <- paste0(c("PVE = "), unique(gg_shape$XTP_R2))
@@ -39,17 +34,14 @@
   yT_R2.labs <- paste0(c("R2 = "), unique(gg_shape$yT_R2))
   names(yT_R2.labs) <- unique(gg_shape$yT_R2)
 
-  # Make plot
-  plot1 <- gg_shape %>%
-    # Obtain Root MSE
-    mutate(value = case_when(
-      result == "mse" ~ sqrt(value),
-      result != "mse" ~ value
-    )) %>%
+# Plot RMSE -------------------------------------------------------------------
+
+  # Make RMSE plot
+  plot_RMSE <- gg_shape %>%
     # Subset
-    filter(grepl(result, variable)) %>%
+    filter(grepl("rmse", variable)) %>%
     # Main Plot
-    ggplot(aes(x = marginals, y = value)) +
+    ggplot(aes(x = marginals, y = value, fill = variable)) +
     geom_boxplot() +
 
     # Grid
@@ -69,13 +61,89 @@
       axis.title = element_text(size = 15)
     ) +
     labs(
-      title = stringr::str_remove(result, "\\."),
+      title = "RMSE",
       x = NULL,
       y = NULL
     )
 
   # Print plot
-  plot1
+  plot_RMSE
+
+# Plot TC -------------------------------------------------------------------
+
+# Define which outcome measure to plot
+result <- levels(gg_shape$variable)[3]
+
+# Make PVE plot
+plot_PVE <- gg_shape %>%
+  # Subset
+  filter(grepl(result, variable)) %>%
+  # Main Plot
+  ggplot(aes(x = marginals, y = value)) +
+  geom_boxplot() +
+
+  # Grid
+  facet_grid(
+    rows = vars(yT_R2),
+    cols = vars(XTP_R2),
+    labeller = labeller(yT_R2 = yT_R2.labs, XTP_R2 = XTP_R2.labs),
+    scales = "free"
+  ) +
+
+  # Format
+  theme(
+    text = element_text(size = 15),
+    plot.title = element_text(hjust = 0.5),
+    axis.text = element_text(size = 15),
+    axis.text.x = element_text(angle = 45, hjust = 0.95),
+    axis.title = element_text(size = 15)
+  ) +
+  labs(
+    title = "Tucker Congruence",
+    x = NULL,
+    y = NULL
+  )
+
+# Print plot
+plot_PVE
+
+# Plot PVE -------------------------------------------------------------------
+
+# Define which outcome measure to plot
+result <- levels(gg_shape$variable)[4]
+
+# Make PVE plot
+plot_PVE <- gg_shape %>%
+  # Subset
+  filter(grepl(result, variable)) %>%
+  # Main Plot
+  ggplot(aes(x = marginals, y = value)) +
+  geom_boxplot() +
+
+  # Grid
+  facet_grid(
+    rows = vars(yT_R2),
+    cols = vars(XTP_R2),
+    labeller = labeller(yT_R2 = yT_R2.labs, XTP_R2 = XTP_R2.labs),
+    scales = "free"
+  ) +
+
+  # Format
+  theme(
+    text = element_text(size = 15),
+    plot.title = element_text(hjust = 0.5),
+    axis.text = element_text(size = 15),
+    axis.text.x = element_text(angle = 45, hjust = 0.95),
+    axis.title = element_text(size = 15)
+  ) +
+  labs(
+    title = "PVE",
+    x = NULL,
+    y = NULL
+  )
+
+# Print plot
+plot_PVE
 
 # Save plots --------------------------------------------------------------
 

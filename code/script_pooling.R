@@ -13,7 +13,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  target_tar <- "20221108_141545.tar.gz"
+  target_tar <- "20221108_161316.tar.gz"
   output <- readTarGz(target_tar)
 
 # Restructure Results -----------------------------------------------------
@@ -34,13 +34,12 @@
   )
 
   # Read
-  file_name <- grep("out", list.files(inDir), value = TRUE)[1]
-  run_name <- gsub("_out.rds", "", file_name)
-  out <- readRDS(paste0("../output/", file_name))
+  # file_name <- grep("out", list.files(inDir), value = TRUE)[1]
+  # run_name <- gsub("_out.rds", "", file_name)
+  # out <- readRDS(paste0("../output/", file_name))
 
+# Restructure for plots -------------------------------------------------------
   id_column <- grep("id", colnames(out))
-
-# Restructure for Box plot ------------------------------------------------
   gg_shape <- reshape2::melt(out, id.var = colnames(out)[1:id_column])
 
   # Save
