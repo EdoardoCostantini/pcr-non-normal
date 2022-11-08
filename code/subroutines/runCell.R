@@ -2,7 +2,7 @@
 # Objective: Subroutine runCell
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-07
+# Modified:  2022-11-08
 # Note:      A "cell" is a cycle through the set of conditions.
 #            The function in this script generates 1 data set, performs
 #            imputations for every condition in the set.
@@ -15,7 +15,7 @@ runCell <- function(cond,
 # Example Internals -------------------------------------------------------
   
   # set.seed(1234)
-  # cond    = conds[56, ]
+  # cond    = conds[61, ]
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
@@ -29,18 +29,25 @@ runCell <- function(cond,
     CPVE = cond$XTP_R2
   )
   
-  # Generate a dependent variable on the true line
-  y <- generateDV(X = XTP$T,
-                  R2 = cond$yT_R2,
-                  beta = parms$yT_beta)
-
   # Apply NORTA transformation
   X_norta <- norta(X = XTP$X, marginal = cond$marginals)
 
+  # Scale X_norta
+  X_norta <- scale(X_norta)
+
+  # Generate a dependent variable on the true line
+  # y <- generateDV(X = XTP$T,
+  y <- generateDV(X = as.matrix(X_norta),
+                  R2 = cond$yT_R2,
+                  beta = parms$yT_beta)
+
+  # Standardize y
+  y <- scale(y)
+
   # Define Training and Testing data
-  ind   <- sample(1 : nrow(dat_orig))
-  train <- ind[1 : (.8*nrow(dat_orig))]
-  test  <- ind[(.8*nrow(dat_orig)+1) : nrow(dat_orig)]
+  ind <- sample(1:nrow(X_norta))
+  train <- ind[1:(.8 * nrow(X_norta))]
+  test  <- ind[(.8*nrow(X_norta)+1) : nrow(X_norta)]
 
 # Analysis ----------------------------------------------------------------
 
@@ -50,25 +57,32 @@ runCell <- function(cond,
     keep = as.character(cond$npcs)
   )
 
-  # PCR MSE
-  mse <- extractMSE(x = pcs$T, y = y, train = train, test = test)
+  # MSE
+  mse_lm <- extractMSE(x = X_norta, y = y, train = train, test = test)
+  mse_pcr <- extractMSE(x = pcs$T, y = y, train = train, test = test)
 
   # Tucker congruence
   tc <- RegularizedSCA::TuckerCoef(XTP$T, pcs$T)$tucker_value
 
   # Explained variance
-  r2 <- pcs$r2
+  pve <- pcs$pve
 
 # Store Output ------------------------------------------------------------
 
   # Define storing object
-  output <- cbind(cond, mse = mse, tc = tc, r2 = r2)
+  output <- cbind(
+    cond,
+    rmse_lm = sqrt(mse_lm),
+    rmse_pcr = sqrt(mse_pcr),
+    tc = tc,
+    pve = pve
+  )
 
   # Return it
   saveRDS(output,
           file = paste0(fs$outDir,
                         "rep", rp,
-                        "_cond", cond$tag,
+                        "_cond", cond$id,
                         ".rds")
   )
 }

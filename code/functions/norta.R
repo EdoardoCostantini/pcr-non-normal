@@ -20,6 +20,13 @@ norta <- function(
     # Transform to uniform distribution (apply normal CDF to X)
     U <- apply(X, 2, pnorm)
 
+    # Round to the fifth decimal place
+    U <- round(U, 5)
+
+    # Convert extremes to values we can work with
+    U[U == 0] <- 1e-5
+    U[U == 1] <- .99999
+    
     # Transform to a target distribution
     if (marginal == "normal") {
         X_norta <- X

@@ -2,24 +2,24 @@
 # Objective: Pooling results
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-07
+# Modified:  2022-11-08
 
-  ## Make sure we have a clean environment:
+  # Make sure we have a clean environment:
   rm(list = ls())
 
-  ## Support Functions
+  # Support Functions
   source("./init.R")
 
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  target_tar <- "20220421_154258.tar.gz"
+  target_tar <- "20221108_141545.tar.gz"
   output <- readTarGz(target_tar)
 
 # Restructure Results -----------------------------------------------------
 # list of conditions containing results for every repetition
 
-  # Give unique name to all objects
+  # Give a unique name to all objects
   names(output$out) <- output$file_names
 
   # Punt into a single data.frame
@@ -34,19 +34,19 @@
   )
 
   # Read
-  file_name <- grep("out", list.files(inDir), value = TRUE)[4]
+  file_name <- grep("out", list.files(inDir), value = TRUE)[1]
   run_name <- gsub("_out.rds", "", file_name)
   out <- readRDS(paste0("../output/", file_name))
 
-  tag_column <- grep("tag", colnames(out))
+  id_column <- grep("id", colnames(out))
 
 # Restructure for Box plot ------------------------------------------------
-  gg_shape <- reshape2::melt(out, id.var = colnames(out)[1:tag_column])
+  gg_shape <- reshape2::melt(out, id.var = colnames(out)[1:id_column])
 
   # Save
   saveRDS(gg_shape,
           file = paste0("../output/",
                         output$name_run,
-                        "_box",
+                        "_ggshape",
                         ".rds")
   )

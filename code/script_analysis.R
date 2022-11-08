@@ -1,8 +1,8 @@
 # Project:   pcr-non-normal
-# Objective: Analysing results
+# Objective: Analyzing results
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-07
+# Modified:  2022-11-08
 
   # Make sure we have a clean environment:
   rm(list = ls())
@@ -22,66 +22,59 @@
   source("./init.R")
 
   # Read output
-  inDir <- "../output/"
-  grep("_box", list.files(inDir), value = TRUE)
-  gg_shape <- readRDS(paste0(inDir, "20220421_154258_box.rds"))
+  file_name <- grep("ggshape", list.files("../output/"), value = TRUE)[2]
+  run_name <- gsub("_out.rds", "", file_name)
+  gg_shape <- readRDS(paste0("../output/", file_name))
 
 # Plots -------------------------------------------------------------------
 
   # Define which outcome measure to plot
-  result <- c("mses.", "npcs.", "r2.", "cors.")[1]
+  result <- levels(gg_shape$variable)[1]
 
-  # Define which conditions to plot and order of some factors
-  K_conditions <- rev(sort(unique(gg_shape$K)))#[2]
-  D_conditions <- sort(unique(gg_shape$D))[2]
-  int_conditions <- unique(gg_shape$interval)[2]
-  methods <- paste(
-    c("orig", "nume", "poly", "dumm", "disj", "PCAmix"),
-    collapse = "|"
-  )
-  npcs_conditions <- levels(gg_shape$npcs)#[1]
+  # New facet label names for XTP_R2 variable
+  XTP_R2.labs <- paste0(c("PVE = "), unique(gg_shape$XTP_R2))
+  names(XTP_R2.labs) <- unique(gg_shape$XTP_R2)
 
-  # Define the caption of the plot
-  caption <- paste0("y axis: ", stringr::str_remove(result, "\\."),
-                    "; interval: ", int_conditions,
-                    "; discrete: ", round(D_conditions, 2))
+  # New facet label names for yT_R2 variable
+  yT_R2.labs <- paste0(c("R2 = "), unique(gg_shape$yT_R2))
+  names(yT_R2.labs) <- unique(gg_shape$yT_R2)
 
-  # Obtain plot
+  # Make plot
   plot1 <- gg_shape %>%
     # Obtain Root MSE
-    # mutate(value = sqrt(value)) %>%
-    mutate(value = case_when(result == "mses." ~ sqrt(value),
-                             result != "mses." ~ value)) %>%
+    mutate(value = case_when(
+      result == "mse" ~ sqrt(value),
+      result != "mse" ~ value
+    )) %>%
     # Subset
     filter(grepl(result, variable)) %>%
-    filter(grepl(methods, variable)) %>%
-    filter(D %in% D_conditions) %>%
-    filter(K %in% K_conditions) %>%
-    filter(interval %in% int_conditions) %>%
-    filter(npcs %in% npcs_conditions) %>%
-    # Change labels of X axis
-    mutate(variable = fct_relabel(variable, str_replace, result, "")
-    ) %>%
     # Main Plot
-    ggplot(aes(x = variable, y = value)) +
+    ggplot(aes(x = marginals, y = value)) +
     geom_boxplot() +
-    # Grid
-    facet_grid(rows = vars(factor(K)),
-               cols = vars(factor(npcs)),
-               scales = "fixed") +
-    # Format
-    # coord_cartesian(ylim = c(.9, 2.5)) +
-    theme(text = element_text(size = 15),
-          plot.title = element_text(hjust = 0.5),
-          axis.text = element_text(size = 15),
-          axis.text.x = element_text(angle = 45, hjust = 0.95),
-          axis.title = element_text(size = 15)) +
-    labs(title = stringr::str_remove(result, "\\."),
-         x     = NULL,
-         y     = NULL,
-         caption = caption)
 
-  # Look at plot
+    # Grid
+    facet_grid(
+      rows = vars(yT_R2),
+      cols = vars(XTP_R2),
+      labeller = labeller(yT_R2 = yT_R2.labs, XTP_R2 = XTP_R2.labs),
+      scales = "free"
+    ) +
+
+    # Format
+    theme(
+      text = element_text(size = 15),
+      plot.title = element_text(hjust = 0.5),
+      axis.text = element_text(size = 15),
+      axis.text.x = element_text(angle = 45, hjust = 0.95),
+      axis.title = element_text(size = 15)
+    ) +
+    labs(
+      title = stringr::str_remove(result, "\\."),
+      x = NULL,
+      y = NULL
+    )
+
+  # Print plot
   plot1
 
 # Save plots --------------------------------------------------------------

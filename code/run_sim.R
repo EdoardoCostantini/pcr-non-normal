@@ -2,18 +2,15 @@
 # Objective: Subroutine doRep (windows parallelization framework)
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-07
+# Modified:  2022-11-08
 
-## Make sure we have a clean environment:
+# Make sure we have a clean environment:
 rm(list = ls())
 
-## Initialize the environment:
+# Initialize the environment:
 source("./init.R")
 
-## Prepare storing results
-source("./fs.R")
-
-## Progress report file
+# Progress report file
 dir.create(fs$outDir)
 file.create(paste0(fs$outDir, fs$fileName_prog, ".txt"))
 
@@ -25,21 +22,27 @@ cat(paste0("SIMULATION PROGRESS REPORT",
     sep = "\n",
     append = TRUE)
 
-## Define repetitions and clusters
-reps <- 1 : 500
+# Define repetitions and clusters (ie number of cores for parallelization)
+reps <- 1 : 50
 clus <- makeCluster(10)
 
-## Export to worker nodes
-# export fs object from the global env
-clusterExport(cl = clus, varlist = "fs", envir = .GlobalEnv)
-# export script to be executed
-clusterEvalQ(cl = clus, expr = source("./init.R"))
+# Export important objects to worker nodes
+clusterExport( # export fs object from the global env
+    cl = clus,
+    varlist = "fs",
+    envir = .GlobalEnv
+)
+clusterEvalQ( # export script to be executed
+    cl = clus,
+    expr = source("./init.R")
+)
 
-# mcApply parallel --------------------------------------------------------
+# Apply in parallel --------------------------------------------------------
 
+# Take note of the start time
 sim_start <- Sys.time()
 
-## Run the computations in parallel on the 'clus' object:
+# Run the computations in parallel on the 'clus' object:
 out <- parLapply(cl    = clus,
                  X     = reps,
                  fun   = doRep,
@@ -47,11 +50,13 @@ out <- parLapply(cl    = clus,
                  parms = parms,
                  fs = fs)
 
-## Kill the cluster:
+# Kill the cluster:
 stopCluster(clus)
 
+# Take note of the end time
 sim_ends <- Sys.time()
 
+# Close off report file
 cat(paste0("\n", "------", "\n",
            "Ends at: ", Sys.time(), "\n",
            "Run time: ",
@@ -61,7 +66,7 @@ cat(paste0("\n", "------", "\n",
     sep = "\n",
     append = TRUE)
 
-# Attach Extract Info Objects
+# Attach info object
 out_support <- list()
 out_support$parms <- parms
 out_support$conds <- conds

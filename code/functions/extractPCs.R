@@ -2,15 +2,15 @@
 # Objective: Extract Principal Components with different methods
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-07
+# Modified:  2022-11-08
 
 extractPCs <- function(dt = matrix(), keep = 1L){
 # Description -------------------------------------------------------------
 
   # Given a data set A in matrix for, it extracts the first keep principal
   # components from A, and returns a dataset
-  # with the first column of A cobined with the extracted components.
-  # It also retunrs the info regarding the proportion of explained variance
+  # with the first column of A combined with the extracted components.
+  # It also returns the info regarding the proportion of explained variance
   # by the defined number of components
   # when @cor_tupe = "mixed", psych::principal recognizes which variables
   # need pearson, polyserial, polychoric, tetrachoric correlations
@@ -21,6 +21,7 @@ extractPCs <- function(dt = matrix(), keep = 1L){
   # keep = c("naf", "nkaiser", ".8", "3")[2] # how should we decide what pcs to keep?
 
 # Body --------------------------------------------------------------------
+
   # Make sure data is scaled
   dt <- scale(dt)
 
@@ -59,10 +60,11 @@ extractPCs <- function(dt = matrix(), keep = 1L){
   }
 
   # Store the CPVE associated with this npcs
-  r2 <- CPVE[npcs]
+  pve <- CPVE[npcs]
 
   # Store
   return(list(T    = T[, 1:npcs, drop = FALSE],
               npcs = npcs,
-              r2   = round(r2, 3)))
+              pve   = round(pve, 3)))
+
 }
