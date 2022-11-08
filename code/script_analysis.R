@@ -22,7 +22,7 @@
   source("./init.R")
 
   # Read output
-  file_name <- grep("ggshape", list.files("../output/"), value = TRUE)[3]
+  file_name <- grep("ggshape", list.files("../output/"), value = TRUE)[4]
   run_name <- gsub("_out.rds", "", file_name)
   gg_shape <- readRDS(paste0("../output/", file_name))
 
@@ -41,13 +41,13 @@
     # Subset
     filter(grepl("rmse", variable)) %>%
     # Main Plot
-    ggplot(aes(x = marginals, y = value, fill = variable)) +
+    ggplot(aes(x = variable, y = value, fill = marginals)) +
     geom_boxplot() +
 
     # Grid
     facet_grid(
-      rows = vars(yT_R2),
-      cols = vars(XTP_R2),
+      cols = vars(yT_R2),
+      rows = vars(XTP_R2),
       labeller = labeller(yT_R2 = yT_R2.labs, XTP_R2 = XTP_R2.labs),
       scales = "free"
     ) +

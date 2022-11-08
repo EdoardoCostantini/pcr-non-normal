@@ -36,8 +36,8 @@ runCell <- function(cond,
   X_norta <- scale(X_norta)
 
   # Generate a dependent variable on the true line
-  # y <- generateDV(X = XTP$T,
-  y <- generateDV(X = as.matrix(X_norta),
+  y <- generateDV(X = XTP$T,
+  # y <- generateDV(X = as.matrix(X_norta),
                   R2 = cond$yT_R2,
                   beta = parms$yT_beta)
 
