@@ -13,18 +13,18 @@ The simulation study procedure involved:
 
 1. Generation of X, the matrix of predictors. This happens based on a reverse SVD computation. 
 
-    a. Random sample and orthogonalization of U (true PC scores) and V (true loading matrix) matrices.
-    b. Compute the true X matrix and added random normal noise with scaled variance to achieve the target cumulative proportion of explained variance.
-    c. Apply [NORTA](https://edoardocostantini.github.io/posts/series-sampling/norta.html) transformation to obtain multivariate distributions with known rank correlation structure and arbitrary target marginal distributions
+    - Random sample and orthogonalization of U (true PC scores) and V (true loading matrix) matrices.
+    - Compute the true X matrix and added random normal noise with scaled variance to achieve the target cumulative proportion of explained variance.
+    - Apply [NORTA](https://edoardocostantini.github.io/posts/series-sampling/norta.html) transformation to obtain multivariate distributions with known rank correlation structure and arbitrary target marginal distributions
 
 2. Generation of y, the variable to be predicted, as a linear combination of the true components with a target proportion of explained variance.
 3. Compute PCs.
 4. Compute all outcome measures:
 
-    a. Out of sample Mean square prediction error (MSE)
-    b. The angle between the first true and estimated PC
-    c. Tucker congruence pc scores matrices
-    d. Explained variance by the true number of PCs
+    - Out of sample Mean square prediction error (MSE)
+    - The angle between the first true and estimated PC
+    - Tucker congruence pc scores matrices
+    - Explained variance by the true number of PCs
 
 ## Simulation study experimental factors
 
