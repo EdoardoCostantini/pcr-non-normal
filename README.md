@@ -26,6 +26,14 @@ The simulation study procedure involved:
     - Tucker congruence pc scores matrices
     - Explained variance by the true number of PCs
 
+## Simulation study fixed factors
+
+These parameters were kept constant in the simulation study:
+
+- **n**: sample size (500)
+- **K**: true number of principal components (3)
+- **npcs**: number of principal components kept (3)
+  
 ## Simulation study experimental factors
 
 The simulation study procedure is repeated for each of the conditions resulting by the crossing of the following experimental factors:
@@ -39,10 +47,8 @@ The simulation study procedure is repeated for each of the conditions resulting 
 
 - **Explained PVE**: Proportion of variance explained by the Principal components (.5, .8, .9, .99)
 - **R2**: True explained variance by the PCs in $y$ (.3, .7, .9, .99)
-- **npcs**: number of principal components kept. The levels of this factor were:
-  - three pre-determined values: only 1 component, the true number of components (3), and the maximum number of components (12)
-  - two non-graphical decision rules (acceleration factor and kaiser rule)
-  - true proportion of explained variance by the true number of components (0.8)
+- **J**: Number of items per PC (4, 150), which results in different total numbers of predictors (12 and 450) to create a low and high-dimensional setting
+- **tp**: The set of variables (true predictors) is used to generate $y$ (PCs, items)
 
 ## How to replicate results
 
@@ -73,8 +79,7 @@ You can also replicate the simulation on a personal computer by following these 
 
 ## Understanding the codebase
 
-If you want to play around with this simulation study and 
-include conditions of your liking keep in mind the following simulation structure:
+If you want to play around with this simulation study and include conditions of your liking keep in mind the following simulation structure:
 - Fixed and experimental factors are provided exclusively by in the
   `init.R`.
 - `run_sim.R` is a script that runs in parallel different calls of 
@@ -87,17 +92,9 @@ include conditions of your liking keep in mind the following simulation structur
   not at the level of the conditions.
 - `runCell()` is a subroutine calling a collection of functions to
   actually perform the steps of the simulation:
-  1. Generation of X - `generateXTP()` generates the true principal components (T) 
-     and observed items (X)
-  2. Generation of y - `generateDV()` generates the dependent variable as a linear 
-     combination of the true components
-  3. Discretization of (part of) X - `disData()` discretizes a condition specific 
-     proportion of variables in X
-  4. Preparation of different version of X - Disjunction table and dummy coded representations
-     of X are created
-  5. PC extraction - a collection of `extractPC**()` functions performs PCA according to the 
-     various approaches
-  6. Outcome measures are computed - `extractMSE()` the MSE and other desired outcomes are
-     extracted from previously created objects
-  7. Storing results - An object containing the outcome measures is stored as .rds file 
-     at every repetition for every condition in a temporary output folder.
+  1. Generation of X - `generateXTP()` generates the true principal components (T) and observed items (X)
+  2. Transformation of X - `norta()` transforms the marginal distribution of the variables to targets
+  3. Generation of y - `generateDV()` generates the dependent variable as a linear combination of the true components or of the transformed X, depending on the condition
+  4. PC extraction - `extractPCs()` function performs PCA according
+  5. Outcome measures are computed - `extractMSE()` the MSE and other desired outcomes are extracted from previously created objects
+  6. Storing results - An object containing the outcome measures is stored as .rds file at every repetition for every condition in a temporary output folder.

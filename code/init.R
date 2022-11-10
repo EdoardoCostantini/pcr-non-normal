@@ -2,7 +2,7 @@
 # Objective: Creates a fs (file system) object file system management
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-08
+# Modified:  2022-11-10
 
 # Packages ----------------------------------------------------------------
 
@@ -62,7 +62,7 @@
   parms$nStreams <- 1000
 
   # Data generation
-  parms$N          <- 1e3 # sample size
+  parms$N          <- 5e2 # sample size
   parms$P          <- 12  # number of variables
   parms$XTP_VAFr   <- c(.5, .3, .2) # relative variance of each component (length = number of pcs)
   parms$XTP_VAFsum <- 100 # total variance of the components
@@ -78,6 +78,12 @@
   
   # Distributions
   marginals <- c("normal", "beta", "skewt", "mixed")
+
+  # Items per principal component / dimensionality of data
+  J <- c(4, 150)
+
+  # True predictors
+  tp <- c("PCs", "items")
   
   # Number of components kept by the PCA extraction
   npcs <- c(
@@ -94,6 +100,8 @@
     XTP_R2 = XTP_R2,
     yT_R2 = yT_R2, # ordinality degree
     npcs = npcs,
+    J = J,
+    tp = tp,
     stringsAsFactors = TRUE
   )
 

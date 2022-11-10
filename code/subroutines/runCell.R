@@ -2,7 +2,7 @@
 # Objective: Subroutine runCell
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-08
+# Modified:  2022-11-10
 # Note:      A "cell" is a cycle through the set of conditions.
 #            The function in this script generates 1 data set, performs
 #            imputations for every condition in the set.
@@ -15,7 +15,7 @@ runCell <- function(cond,
 # Example Internals -------------------------------------------------------
   
   # set.seed(1234)
-  # cond    = conds[61, ]
+  # cond    = conds[256, ]
   # rp = 1
 
 # Data Generation ---------------------------------------------------------
@@ -23,7 +23,7 @@ runCell <- function(cond,
   # Generate data
   XTP <- generateXTP(
     I = parms$N,
-    J = parms$P,
+    J = cond$J * length(parms$XTP_VAFr),
     VAFr = parms$XTP_VAFr,
     VAFsum = parms$XTP_VAFsum,
     CPVE = cond$XTP_R2
@@ -35,9 +35,16 @@ runCell <- function(cond,
   # Scale X_norta
   X_norta <- scale(X_norta)
 
+  # Parse true predictors
+  if(cond$tp == "PCs"){
+      X <- XTP$T
+  }
+  if(cond$tp == "items"){
+      X <- as.matrix(X_norta)
+  }
+
   # Generate a dependent variable on the true line
-  y <- generateDV(X = XTP$T,
-  # y <- generateDV(X = as.matrix(X_norta),
+  y <- generateDV(X = X,
                   R2 = cond$yT_R2,
                   beta = parms$yT_beta)
 
