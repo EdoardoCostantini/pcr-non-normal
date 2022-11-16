@@ -2,7 +2,7 @@
 # Objective: Pooling results
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-08
+# Modified:  2022-11-16
 
   # Make sure we have a clean environment:
   rm(list = ls())
@@ -13,7 +13,7 @@
 # Load Results ----------------------------------------------------------
 
   inDir <- "../output/"
-  target_tar <- "20221108_165115.tar.gz"
+  target_tar <- "20221115_101341.tar.gz"
   output <- readTarGz(target_tar)
 
 # Restructure Results -----------------------------------------------------

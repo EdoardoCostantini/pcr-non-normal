@@ -2,7 +2,7 @@
 # Objective: Analyzing results
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-08
+# Modified:  2022-11-16
 
   # Make sure we have a clean environment:
   rm(list = ls())
@@ -22,7 +22,7 @@
   source("./init.R")
 
   # Read output
-  file_name <- grep("ggshape", list.files("../output/"), value = TRUE)[4]
+  file_name <- grep("ggshape", list.files("../output/"), value = TRUE)[5]
   run_name <- gsub("_out.rds", "", file_name)
   gg_shape <- readRDS(paste0("../output/", file_name))
 
@@ -36,18 +36,28 @@
 
 # Plot RMSE -------------------------------------------------------------------
 
+  # Define which outcome measure to plot
+  result <- paste0(levels(gg_shape$variable)[1:2], collapse = "|")
+
   # Make RMSE plot
   plot_RMSE <- gg_shape %>%
     # Subset
-    filter(grepl("rmse", variable)) %>%
+    filter(
+      grepl(result, variable),
+      value < 20, # Get rid of outliers
+      XTP_R2 == sort(unique(gg_shape$XTP_R2))[3],
+      yT_R2 == sort(unique(gg_shape$yT_R2))[3],
+      tp %in% unique(gg_shape$tp),
+      J %in% unique(gg_shape$J)
+      ) %>%
     # Main Plot
     ggplot(aes(x = variable, y = value, fill = marginals)) +
     geom_boxplot() +
 
     # Grid
     facet_grid(
-      cols = vars(yT_R2),
-      rows = vars(XTP_R2),
+      rows = vars(J),
+      cols = vars(tp),
       labeller = labeller(yT_R2 = yT_R2.labs, XTP_R2 = XTP_R2.labs),
       scales = "free"
     ) +
@@ -75,17 +85,19 @@
 result <- levels(gg_shape$variable)[3]
 
 # Make PVE plot
-plot_PVE <- gg_shape %>%
+plot_TC <- gg_shape %>%
   # Subset
-  filter(grepl(result, variable)) %>%
+  filter(
+    grepl(result, variable)
+  ) %>%
   # Main Plot
   ggplot(aes(x = marginals, y = value)) +
   geom_boxplot() +
 
   # Grid
   facet_grid(
-    rows = vars(yT_R2),
-    cols = vars(XTP_R2),
+    cols = vars(J),
+    rows = vars(XTP_R2),
     labeller = labeller(yT_R2 = yT_R2.labs, XTP_R2 = XTP_R2.labs),
     scales = "free"
   ) +
@@ -105,7 +117,7 @@ plot_PVE <- gg_shape %>%
   )
 
 # Print plot
-plot_PVE
+plot_TC
 
 # Plot PVE -------------------------------------------------------------------
 
@@ -115,15 +127,17 @@ result <- levels(gg_shape$variable)[4]
 # Make PVE plot
 plot_PVE <- gg_shape %>%
   # Subset
-  filter(grepl(result, variable)) %>%
+  filter(
+    grepl(result, variable)
+  ) %>%
   # Main Plot
   ggplot(aes(x = marginals, y = value)) +
   geom_boxplot() +
 
   # Grid
   facet_grid(
-    rows = vars(yT_R2),
-    cols = vars(XTP_R2),
+    cols = vars(J),
+    rows = vars(XTP_R2),
     labeller = labeller(yT_R2 = yT_R2.labs, XTP_R2 = XTP_R2.labs),
     scales = "free"
   ) +
