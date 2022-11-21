@@ -2,7 +2,7 @@
 # Objective: function to compress output folder to zip folder
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-07
+# Modified:  2022-11-21
 
 writeTarGz <- function(folder_name){
   # Description:
@@ -13,8 +13,10 @@ writeTarGz <- function(folder_name){
   setwd("../output/")
 
   # Zip folder
-  system(command = paste0("tar cvzf ", folder_name, ".tar.gz",
-                          " ./", folder_name, "/"))
+  system(command = paste0(
+    "tar cvzf ", folder_name, ".tar.gz",
+    " ./", folder_name
+  ))
 
   # Delete Folder
   system(command = paste0("rm -rf ", folder_name))
