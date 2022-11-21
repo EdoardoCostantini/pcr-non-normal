@@ -2,7 +2,7 @@
 # Objective: Subroutine runCell
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-10
+# Modified:  2022-11-21
 # Note:      A "cell" is a cycle through the set of conditions.
 #            The function in this script generates 1 data set, performs
 #            imputations for every condition in the set.
@@ -61,7 +61,8 @@ runCell <- function(cond,
   # PCA Computation
   pcs <- extractPCs(
     dt = X_norta,
-    keep = as.character(cond$npcs)
+    keep = as.character(cond$npcs),
+    cor_method = as.character(cond$ct)
   )
 
   # MSE

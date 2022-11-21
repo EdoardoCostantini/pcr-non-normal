@@ -2,9 +2,9 @@
 # Objective: Extract Principal Components with different methods
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-08
+# Modified:  2022-11-21
 
-extractPCs <- function(dt = matrix(), keep = 1L){
+extractPCs <- function(dt = matrix(), keep = 1L, cor_method = "pearson"){
 # Description -------------------------------------------------------------
 
   # Given a data set A in matrix for, it extracts the first keep principal
@@ -25,25 +25,25 @@ extractPCs <- function(dt = matrix(), keep = 1L){
   # Make sure data is scaled
   dt <- scale(dt)
 
-  # SVD decomposition
-  svd_out <- svd(dt)
+  # Correlation matrix
+  cormat <- cor(dt, method = cor_method)
 
-  # Compute the PC scores
-  T <- (svd_out$u %*% diag(svd_out$d))
+  # Eigen-decomposition
+  eigenmat <- eigen(cormat)
 
-  # Compute a vector of cumulative proportions of explained variances
-  CPVE <- cumsum(prop.table(svd_out$d^2))
+  # Compute PC scores
+  T <- dt %*% eigenmat$vectors
+
+  # CPVE
+  CPVE <- cumsum(prop.table(eigenmat$values))
 
   # Check if keep is a non-graphical solution
   keep_nScree <- suppressWarnings(is.na(as.numeric(keep)))
 
   # Define npcs and CPVE based on type of keep
   if(keep_nScree){
-    # Store the eigenvalues
-    eigenvalues <- svd_out$d^2
-
     # Compute all non-graphical solutions
-    non_graph_scree <- nScree(x = eigenvalues)
+    non_graph_scree <- nScree(x = eigenmat$values)
 
     # Keep the result of the one with the desired name
     npcs <- non_graph_scree$Components[, keep]
@@ -65,6 +65,6 @@ extractPCs <- function(dt = matrix(), keep = 1L){
   # Store
   return(list(T    = T[, 1:npcs, drop = FALSE],
               npcs = npcs,
-              pve   = round(pve, 3)))
+              pve  = round(pve, 3)))
 
 }

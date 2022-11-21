@@ -2,7 +2,7 @@
 # Objective: Creates a fs (file system) object file system management
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-10
+# Modified:  2022-11-21
 
 # Packages ----------------------------------------------------------------
 
@@ -57,7 +57,7 @@
   parms    <- list()
 
   # Simulation parameter
-  parms$dt_rep   <- 1e3 # number of data repetitionsù
+  parms$dt_rep   <- 1e3 # number of data repetitions
   parms$seed     <- 20221107
   parms$nStreams <- 1000
 
@@ -84,6 +84,9 @@
 
   # True predictors
   tp <- c("PCs", "items")
+
+  # Correlation type
+  ct <- c("pearson", "spearman")
   
   # Number of components kept by the PCA extraction
   npcs <- c(
@@ -102,6 +105,7 @@
     npcs = npcs,
     J = J,
     tp = tp,
+    ct = ct,
     stringsAsFactors = TRUE
   )
 
