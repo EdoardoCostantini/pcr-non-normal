@@ -98,3 +98,12 @@ If you want to play around with this simulation study and include conditions of 
   4. PC extraction - `extractPCs()` function performs PCA according
   5. Outcome measures are computed - `extractMSE()` the MSE and other desired outcomes are extracted from previously created objects
   6. Storing results - An object containing the outcome measures is stored as .rds file at every repetition for every condition in a temporary output folder.
+
+### Result files
+
+- 20221115_101341.tar.gz 
+  - PCA computed using SVD
+  - No Spearman correlation used
+- 20221121_112535.tar.gz
+  - PCA computed using SVD
+  - Both Pearson and Spearman correlation used

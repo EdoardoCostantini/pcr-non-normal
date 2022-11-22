@@ -2,7 +2,7 @@
 # Objective: Analyzing results
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-16
+# Modified:  2022-11-22
 
   # Make sure we have a clean environment:
   rm(list = ls())
@@ -22,8 +22,7 @@
   source("./init.R")
 
   # Read output
-  file_name <- grep("ggshape", list.files("../output/"), value = TRUE)[5]
-  run_name <- gsub("_out.rds", "", file_name)
+  file_name <- "20221121_112535_ggshape.rds"
   gg_shape <- readRDS(paste0("../output/", file_name))
 
   # New facet label names for XTP_R2 variable
@@ -45,10 +44,11 @@
     filter(
       grepl(result, variable),
       value < 20, # Get rid of outliers
-      XTP_R2 == sort(unique(gg_shape$XTP_R2))[3],
-      yT_R2 == sort(unique(gg_shape$yT_R2))[3],
+      XTP_R2 == sort(unique(gg_shape$XTP_R2))[4],
+      yT_R2 == sort(unique(gg_shape$yT_R2))[4],
       tp %in% unique(gg_shape$tp),
-      J %in% unique(gg_shape$J)
+      J %in% unique(gg_shape$J),
+      ct %in% unique(gg_shape$ct)[1]
       ) %>%
     # Main Plot
     ggplot(aes(x = variable, y = value, fill = marginals)) +
@@ -79,6 +79,51 @@
   # Print plot
   plot_RMSE
 
+# Plot RMSE: Pearson vs Spearman ----------------------------------------------
+
+# Define which outcome measure to plot
+result <- paste0(levels(gg_shape$variable)[2], collapse = "|")
+
+# Make RMSE plot
+plot_RMSE_ps <- gg_shape %>%
+  # Subset
+  filter(
+    grepl(result, variable),
+    value < 20, # Get rid of outliers
+    XTP_R2 == sort(unique(gg_shape$XTP_R2))[4],
+    yT_R2 == sort(unique(gg_shape$yT_R2))[4],
+    tp %in% unique(gg_shape$tp),
+    J %in% unique(gg_shape$J)
+  ) %>%
+  # Main Plot
+  ggplot(aes(x = ct, y = value, fill = marginals)) +
+  geom_boxplot() +
+
+  # Grid
+  facet_grid(
+    rows = vars(J),
+    cols = vars(tp),
+    labeller = labeller(yT_R2 = yT_R2.labs, XTP_R2 = XTP_R2.labs),
+    scales = "free"
+  ) +
+
+  # Format
+  theme(
+    text = element_text(size = 15),
+    plot.title = element_text(hjust = 0.5),
+    axis.text = element_text(size = 15),
+    axis.text.x = element_text(angle = 45, hjust = 0.95),
+    axis.title = element_text(size = 15)
+  ) +
+  labs(
+    title = "RMSE",
+    x = NULL,
+    y = NULL
+  )
+
+# Print plot
+plot_RMSE_ps
+
 # Plot TC -------------------------------------------------------------------
 
 # Define which outcome measure to plot
@@ -91,7 +136,7 @@ plot_TC <- gg_shape %>%
     grepl(result, variable)
   ) %>%
   # Main Plot
-  ggplot(aes(x = marginals, y = value)) +
+  ggplot(aes(x = ct, y = value, fill = marginals)) +
   geom_boxplot() +
 
   # Grid
@@ -131,7 +176,7 @@ plot_PVE <- gg_shape %>%
     grepl(result, variable)
   ) %>%
   # Main Plot
-  ggplot(aes(x = marginals, y = value)) +
+  ggplot(aes(x = ct, y = value, fill = marginals)) +
   geom_boxplot() +
 
   # Grid
