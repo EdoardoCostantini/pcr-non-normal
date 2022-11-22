@@ -2,7 +2,7 @@
 # Objective: Subroutine doRep (windows parallelization framework)
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-08
+# Modified:  2022-11-22
 
 # Make sure we have a clean environment:
 rm(list = ls())
@@ -79,4 +79,4 @@ saveRDS(out_support,
 
 # Zip output folder -------------------------------------------------------
 
-writeTarGz(fs$fileName_res)
+writeTarGz(folder_name = fs$fileName_res)
