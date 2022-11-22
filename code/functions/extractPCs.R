@@ -64,6 +64,7 @@ extractPCs <- function(dt = matrix(), keep = 1L, cor_method = "pearson"){
 
   # Store
   return(list(T    = T[, 1:npcs, drop = FALSE],
+              V = eigenmat$vectors[, 1:npcs],
               npcs = npcs,
               pve  = round(pve, 3)))
 
