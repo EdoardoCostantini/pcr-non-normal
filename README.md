@@ -105,5 +105,5 @@ If you want to play around with this simulation study and include conditions of 
   - PCA computed using SVD
   - No Spearman correlation used
 - 20221121_112535.tar.gz
-  - PCA computed using SVD
-  - Both Pearson and Spearman correlation used
+  - PCA computed using EVD
+  - Both Pearson and Spearman correlations used
