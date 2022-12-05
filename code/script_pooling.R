@@ -2,7 +2,7 @@
 # Objective: Pooling results
 # Author:    Edoardo Costantini
 # Created:   2022-11-07
-# Modified:  2022-11-22
+# Modified:  2022-12-05
 
   # Make sure we have a clean environment:
   rm(list = ls())
@@ -24,19 +24,6 @@
 
   # Punt into a single data.frame
   out <- do.call(rbind, output$out)
-
-  # Store
-  saveRDS(out,
-          file = paste0("../output/",
-                        output$name_run,
-                        "_out",
-                        ".rds")
-  )
-
-  # Read
-  # file_name <- grep("out", list.files(inDir), value = TRUE)[1]
-  # run_name <- gsub("_out.rds", "", file_name)
-  # out <- readRDS(paste0("../output/", file_name))
 
 # Restructure for plots -------------------------------------------------------
   id_column <- grep("id", colnames(out))
