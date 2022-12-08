@@ -7,7 +7,7 @@ Simulation study to compare the out-of-sample prediction performance of Principa
 The goal of the study was to understand how different PCR is effect by the non-normality of the distribution of the predictors that are summarised using PCA.
 The quality of the representation is assessed based on the prediction error obtained by using the PCs extracted based on the different coding schemes.
 
-## Simulation study procedure
+### Simulation study procedure
 
 The simulation study procedure involved:
 
@@ -17,39 +17,31 @@ The simulation study procedure involved:
     - Compute the true X matrix and added random normal noise with scaled variance to achieve the target cumulative proportion of explained variance.
     - Apply [NORTA](https://edoardocostantini.github.io/posts/series-sampling/norta.html) transformation to obtain multivariate distributions with known rank correlation structure and arbitrary target marginal distributions
 
-2. Generation of y, the variable to be predicted, as a linear combination of the true components with a target proportion of explained variance.
-3. Compute PCs.
+2. Generation of y, the variable to be predicted, as a linear combination of either the true components or the NORTA-transformed observed items, with a target proportion of explained variance.
+3. Computation of three (true number) PCs.
 4. Compute all outcome measures:
 
     - Out of sample Mean square prediction error (MSE)
-    - The angle between the first true and estimated PC
-    - Tucker congruence pc scores matrices
+    - Similarity (Tucker congruence) between the true and computed pc scores
     - Explained variance by the true number of PCs
 
-## Simulation study fixed factors
+### Simulation study fixed factors
 
 These parameters were kept constant in the simulation study:
 
-- **n**: sample size (500)
-- **K**: true number of principal components (3)
-- **npcs**: number of principal components kept (3)
-  
-## Simulation study experimental factors
+- sample size (n = 500)
+- true number of principal components (q = 3)
+- number of principal components computed (npcs = 3)
+
+### Simulation study experimental factors
 
 The simulation study procedure is repeated for each of the conditions resulting by the crossing of the following experimental factors:
 
-- **Marginal distributions**: proportion of variables in X that are discretized (.33, .66, 1)
-
-  - Normal
-  - Beta
-  - Skewed-t
-  - Mix of these
-
-- **Explained PVE**: Proportion of variance explained by the Principal components (.5, .8, .9, .99)
-- **R2**: True explained variance by the PCs in $y$ (.3, .7, .9, .99)
-- **J**: Number of items per PC (4, 150), which results in different total numbers of predictors (12 and 450) to create a low and high-dimensional setting
-- **tp**: The set of variables (true predictors) is used to generate $y$ (PCs, items)
-
+- number of items per PC (J = (4, 150), which results in a total of 12 or 450 items)
+- marginal distributions of the items (normal, beta, Skewed-t, random mix of these three)
+- Proportion of variance explained by the Principal components (PVE = (.5, .8, .9, .99))
+- True explained variance by the true predictors in y (R^2 = .3, .7, .9, .99)
+- The set of variables (true predictors) used to generate y (\text{tp} = \text{(PCs, items)})
 ## How to replicate results
 
 ### Running the simulation on a PC / Mac
