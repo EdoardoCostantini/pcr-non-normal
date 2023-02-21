@@ -33,6 +33,9 @@
   yT_R2.labs <- paste0(c("R2 = "), unique(gg_shape$yT_R2))
   names(yT_R2.labs) <- unique(gg_shape$yT_R2)
 
+  # New names for outcomes
+  levels(gg_shape$variable) <- gsub("rmse_", "", levels(gg_shape$variable))
+
 # Plot RMSE -------------------------------------------------------------------
 
   # Define which outcome measure to plot
@@ -67,7 +70,6 @@
       text = element_text(size = 15),
       plot.title = element_text(hjust = 0.5),
       axis.text = element_text(size = 15),
-      axis.text.x = element_text(angle = 45, hjust = 0.95),
       axis.title = element_text(size = 15)
     ) +
     labs(
@@ -112,7 +114,6 @@ plot_RMSE_ps <- gg_shape %>%
     text = element_text(size = 15),
     plot.title = element_text(hjust = 0.5),
     axis.text = element_text(size = 15),
-    axis.text.x = element_text(angle = 45, hjust = 0.95),
     axis.title = element_text(size = 15)
   ) +
   labs(
@@ -152,7 +153,6 @@ plot_TC <- gg_shape %>%
     text = element_text(size = 15),
     plot.title = element_text(hjust = 0.5),
     axis.text = element_text(size = 15),
-    axis.text.x = element_text(angle = 45, hjust = 0.95),
     axis.title = element_text(size = 15)
   ) +
   labs(
