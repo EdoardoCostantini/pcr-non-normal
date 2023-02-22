@@ -7,18 +7,18 @@
 
 # Read output
 file_name <- "20221121_112535_ggshape.rds"
-dataResults <- readRDS(paste0("../output/", file_name))
+resPCRnon <- readRDS(paste0("../output/", file_name))
 
 # New facet label names for XTP_R2 variable
-XTP_R2.labs <- paste0(c("PVE = "), unique(dataResults$XTP_R2))
-names(XTP_R2.labs) <- unique(dataResults$XTP_R2)
+XTP_R2.labs <- paste0(c("PVE = "), unique(resPCRnon$XTP_R2))
+names(XTP_R2.labs) <- unique(resPCRnon$XTP_R2)
 
 # New facet label names for yT_R2 variable
-yT_R2.labs <- paste0(c("R2 = "), unique(dataResults$yT_R2))
-names(yT_R2.labs) <- unique(dataResults$yT_R2)
+yT_R2.labs <- paste0(c("R2 = "), unique(resPCRnon$yT_R2))
+names(yT_R2.labs) <- unique(resPCRnon$yT_R2)
 
 # New names for outcomes
-levels(dataResults$variable) <- gsub("rmse_", "", levels(dataResults$variable))
+levels(resPCRnon$variable) <- gsub("rmse_", "", levels(resPCRnon$variable))
 
 # Save the two objects as .rda ready for shiny app
-save(dataResults, file = "../output/dataResults.rda")
+save(resPCRnon, file = "../output/resPCRnon.rda")
